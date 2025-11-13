@@ -4,13 +4,14 @@ class Solution {
     public int[][] divideArray(int[] nums, int k) {
         Arrays.sort(nums);
         int n = nums.length;
-        int[][] res = new int[n / 3][3];
+        if (n % 3 != 0) return new int[0][0];
+
+        int[][] result = new int[n / 3][3];
         for (int i = 0; i < n; i += 3) {
-            if (nums[i + 2] - nums[i] > k) return new int[0][0];
-            res[i / 3][0] = nums[i];
-            res[i / 3][1] = nums[i + 1];
-            res[i / 3][2] = nums[i + 2];
+            int a = nums[i], b = nums[i + 1], c = nums[i + 2];
+            if (c - a > k) return new int[0][0]; 
+            result[i / 3] = new int[]{a, b, c};
         }
-        return res;
+        return result;
     }
 }
