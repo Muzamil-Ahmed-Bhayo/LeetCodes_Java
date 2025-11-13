@@ -1,16 +1,19 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
     public int partitionArray(int[] nums, int k) {
         Arrays.sort(nums);
-        int count = 1;
-        int start = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] - start > k) {
-                count++;
-                start = nums[i];
+        int n = nums.length;
+        int count = 0, i = 0;
+
+        while (i < n) {
+            int start = nums[i];
+            count++;
+            while (i < n && nums[i] - start <= k) {
+                i++;
             }
         }
+
         return count;
     }
 }
