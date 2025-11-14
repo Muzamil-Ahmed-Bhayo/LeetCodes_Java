@@ -1,18 +1,19 @@
-import java.util.*;
-
 class Solution {
     public long kMirror(int k, int n) {
         long sum = 0;
-        int count = 0;
+        int found = 0;
         int length = 1;
 
-        while (count < n) {
-            List<Long> palindromes = generateBase10Palindromes(length);
-            for (long num : palindromes) {
-                if (isPalindrome(convertToBase(num, k))) {
+        while (found < n) {
+            int halfLen = (length + 1) / 2;
+            long start = (long) Math.pow(10, halfLen - 1);
+            long end = (long) Math.pow(10, halfLen);
+
+            for (long half = start; half < end && found < n; half++) {
+                long num = buildPalindrome(half, length % 2 == 1);
+                if (isPalindrome(toBaseK(num, k))) {
                     sum += num;
-                    count++;
-                    if (count == n) return sum;
+                    found++;
                 }
             }
             length++;
@@ -20,34 +21,29 @@ class Solution {
         return sum;
     }
 
-    private List<Long> generateBase10Palindromes(int length) {
-        List<Long> res = new ArrayList<>();
-        int halfLen = (length + 1) / 2;
-        long start = (long) Math.pow(10, halfLen - 1);
-        long end = (long) Math.pow(10, halfLen);
-
-        for (long i = start; i < end; i++) {
-            String s = String.valueOf(i);
-            String rev = new StringBuilder(s.substring(0, length % 2 == 0 ? s.length() : s.length() - 1))
-                            .reverse().toString();
-            res.add(Long.parseLong(s + rev));
+    private long buildPalindrome(long half, boolean odd) {
+        long res = half;
+        if (odd) half /= 10;
+        while (half > 0) {
+            res = res * 10 + (half % 10);
+            half /= 10;
         }
         return res;
     }
 
-    private String convertToBase(long num, int base) {
+    private String toBaseK(long num, int k) {
         StringBuilder sb = new StringBuilder();
         while (num > 0) {
-            sb.append(num % base);
-            num /= base;
+            sb.append(num % k);
+            num /= k;
         }
-        return sb.reverse().toString();
+        return sb.toString();
     }
 
     private boolean isPalindrome(String s) {
-        int l = 0, r = s.length() - 1;
-        while (l < r) {
-            if (s.charAt(l++) != s.charAt(r--)) return false;
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i++) != s.charAt(j--)) return false;
         }
         return true;
     }
